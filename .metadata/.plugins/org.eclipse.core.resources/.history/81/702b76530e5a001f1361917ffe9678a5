@@ -1,0 +1,5 @@
+package com.example.quickpoll.domain;
+
+public class Vote {
+
+}
