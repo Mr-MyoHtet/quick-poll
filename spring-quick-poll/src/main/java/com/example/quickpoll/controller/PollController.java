@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.quickpoll.domain.Poll;
+import com.example.quickpoll.exception.ResourceNotFoundException;
 import com.example.quickpoll.repository.PollRepository;
 
 @RestController
@@ -40,6 +41,9 @@ public class PollController {
 	@GetMapping("/polls/{pollId}")
 	public ResponseEntity<?> getPoll(@PathVariable Long pollId) {
 		Optional<Poll> p = pollRepository.findById(pollId);
+		if (p == null) {
+			throw new ResourceNotFoundException("Poll with id " + pollId + " not found");
+		}
 		return new ResponseEntity<>(p, HttpStatus.OK);
 	}
 
