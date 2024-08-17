@@ -17,6 +17,14 @@ public class PollController {
 	@Autowired
 	private PollRepository pollRepository;
 
+	@SuppressWarnings("unused")
+	private void verifyPoll(Long pollId) throws ResourceNotFoundException {
+		Optional<Poll> poll = pollRepository.findById(pollId);
+		if (!poll.isPresent()) {
+			throw new ResourceNotFoundException("Poll with id " + pollId + " not found");
+		}
+	}
+
 	@GetMapping("/polls")
 	public ResponseEntity<?> getAllPolls() {
 
@@ -27,13 +35,6 @@ public class PollController {
 	@PostMapping("/polls")
 	public ResponseEntity<?> createPoll(@RequestBody Poll poll) {
 		poll = pollRepository.save(poll);
-//		HttpHeaders responseHeaders = new HttpHeaders();
-//		URI newPollUri = ServletUriComponentsBuilder
-//		.fromCurrentRequest()
-//		.path("/{id}")
-//		.buildAndExpand(poll.getId())
-//		.toUri();
-//		responseHeaders.setLocation(newPollUri);
 		System.out.println("Hellow world");
 		return new ResponseEntity<>(null, HttpStatus.CREATED);
 	}
@@ -41,10 +42,8 @@ public class PollController {
 	@GetMapping("/polls/{pollId}")
 	public ResponseEntity<?> getPoll(@PathVariable Long pollId) {
 		Optional<Poll> p = pollRepository.findById(pollId);
-		if (p == null) {
-			throw new ResourceNotFoundException("Poll with id " + pollId + " not found");
-		}
-		return new ResponseEntity<>(p, HttpStatus.OK);
+		verifyPoll(pollId);
+		return new ResponseEntity<>(p.get(), HttpStatus.OK);
 	}
 
 	@PutMapping("/polls/{pollId}")
@@ -55,6 +54,7 @@ public class PollController {
 
 	@DeleteMapping("/polls/{pollId}")
 	public ResponseEntity<?> deletePoll(@PathVariable Long pollId) {
+		verifyPoll(pollId);
 		pollRepository.deleteById(pollId);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}

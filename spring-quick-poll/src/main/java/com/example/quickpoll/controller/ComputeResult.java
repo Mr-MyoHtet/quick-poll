@@ -45,7 +45,6 @@ public class ComputeResult {
 				optionCount.setOptionId(v.getOption().getId());
 				temMap.put(v.getOption().getId(), optionCount);
 			}
-             System.out.println(optionCount.getCount());
              
 			optionCount.setCount(optionCount.getCount() + 1);
 		}
